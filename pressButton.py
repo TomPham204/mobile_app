@@ -34,10 +34,11 @@ randomList = [blue, beige, red, yellow, purple, teal, orange, pink, lemon]
 currentColorList = [blue, beige, red, yellow, purple]
 
 currentActiveColor = 1
-timeMax = 999
+timeMax = 10
 
 timePopup = Popup()
 sound = SoundLoader.load("snd/click.wav")
+bgm = SoundLoader.load("snd/battle.mp3")
 Builder.load_file("UI.kv")
 
 
@@ -170,9 +171,17 @@ class PressButton(Screen):
 
     def start(self):
         global countdown
+        global bgm
         self.sm.current = "game"
 
         self.ids.startButton.disabled = True
+
+        if JsonStore("data/sound.json").get("soundState")["activeOrNot"] == "True":
+            bgm.loop = True
+            bgm.play()
+        else:
+            pass
+
         self.buttons_enabled()
         self.change_color_list()
         self.change_text()
@@ -195,7 +204,9 @@ class PressButton(Screen):
         global score
         global popup
         global timePopup
+        global bgm
 
+        bgm.stop()
         timePopup.dismiss()
         self.finalScore = str(score)
 
